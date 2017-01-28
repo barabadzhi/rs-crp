@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="description" content="Critical rendering path exercise">
+    <meta name="author" content="Bogdan Arabadzhi">
+    <title>Mobile portfolio</title>
+
+    <link href="css/style.css" rel="stylesheet">
+    <link href="css/mobile.css" rel="stylesheet" inline>
+    <link href="css/print.css" rel="stylesheet" inline>
+
+    <!-- Open Sans font pre-minified -->
+    <style>@font-face{font-family:"Open Sans";font-style:normal;font-weight:400;src:local("Open Sans"),local("OpenSans"),url(https://fonts.gstatic.com/s/opensans/v13/cJZKeOuBrn4kERxqtaUH3ZBw1xU1rKptJj_0jans920.woff2) format("woff2")}@font-face{font-family:"Open Sans";font-style:normal;font-weight:700;src:local("Open Sans Bold"),local("OpenSans-Bold"),url(https://fonts.gstatic.com/s/opensans/v13/k3k702ZOKiLJc3WVjuplzBampu5_7CjHW5spxoeN3Vs.woff2) format("woff2")}</style>
+
+    <script src="js/perfmatters.js" inline></script>
+
+    <!-- Google Analytics script pre-uglified -->
+    <script>!function(e,n){e.GoogleAnalyticsObject=n,e[n]=e[n]||function(){(e[n].q=e[n].q||[]).push(arguments)},e[n].l=1*new Date}(window,"ga"),ga("create","UA-XXXX-Y"),ga("send","pageview");</script>
+
+    <script async src="https://www.google-analytics.com/analytics.js"></script>
+</head>
+
+<body>
+    <article>
+        <header>
+            <a href="/">
+                <img src="assets/cameron.jpg" width="70" alt="Cameron Pittman profile picture">
+            </a>
+            <p>Cameron Pittman<br>
+              <span>Course Developer</span>
+            </p>
+        </header>
+
+        <div class="container">
+            <div class="hero">
+                <strong>I love web development!</strong> This is a template for a simple portfolio. I decided to use it to showcase a few Udacity courses I've taken and some teaching work, but you can use it to showcase any kind of project that you want the world to see :)
+                <br>Contact me: me@email.com
+            </div>
+
+            <div class="content">
+                <ul>
+                    <li>
+                        <img src="assets/2048.jpg" width="100" alt="2048 game screenshot">
+                        <a href="project-2048.html">Build Your Own 2048!</a>
+                        <p>I made my own version of 2048. How cool is that!?</p>
+                    </li>
+
+                    <li>
+                        <img src="assets/wpo.jpg" width="100" alt="Website Performance Optimization course photo">
+                        <a href="project-webperf.html">Website Performance Optimization</a>
+                        <p>Hey... this class looks familiar.</p>
+                    </li>
+
+                    <li>
+                        <img src="assets/mobilewebdev.jpg" width="100" alt="Mobile Web Development course photo">
+                        <a href="project-mobile.html">Mobile Web Development</a>
+                        <p>Making mobile apps isn't so hard after all.</p>
+                    </li>
+
+                    <li>
+                        <img src="assets/pizzeria.jpg" width="100" alt="Pizzeria photo">
+                        <a href="views/pizza.html">Cam's Pizzeria</a>
+                        <p>Who wants a performant pizza?</p>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </article>
+
+    <article>
+        <header>
+            <a href="/">
+              <img src="assets/bogdan.jpg" width="70" alt="Bogdan Arabadzhi profile picture">
+            </a>
+            <p>Bogdan Arabadzhi<br>
+              <span>Front-end Developer</span>
+            </p>
+        </header>
+
+        <div class="container">
+            <div class="hero">
+                <a href="mailto:bogdan.today@gmail.com">✉ Send me an e-mail</a>
+                <a href="tel:+375296584437">☎ Call via mobile phone</a>
+            </div>
+        </div>
+    </article>
+
+    <footer>
+        <p>&copy; Web Performance 2014 <span id="crp-stats"></span></p>
+    </footer>
+</body>
+
+</html>
