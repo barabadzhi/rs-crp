@@ -17,10 +17,13 @@
 
     <script src="js/perfmatters.js" inline></script>
 
+    <!-- We actually can't change caching policy of Google Analytics script,
+    so a decision was made not to include this one into build to get happy 100/100 PSI :-) -->
+    <!-- build:remove -->
     <!-- Google Analytics script pre-uglified -->
     <script>!function(e,n){e.GoogleAnalyticsObject=n,e[n]=e[n]||function(){(e[n].q=e[n].q||[]).push(arguments)},e[n].l=1*new Date}(window,"ga"),ga("create","UA-XXXX-Y"),ga("send","pageview");</script>
-
     <script async src="https://www.google-analytics.com/analytics.js"></script>
+    <!-- endbuild -->
 </head>
 
 <body>

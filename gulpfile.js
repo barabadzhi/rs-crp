@@ -2,8 +2,9 @@
 
 const gulp = require('gulp');
 const fs = require('fs-extra');
+const zlib = require('zlib');
 
-const browserSync = require('browser-sync').create();
+const browserSync = require('browser-sync');
 const ngrok = require('ngrok');
 const psi = require('psi');
 
@@ -20,17 +21,22 @@ const inlinesource = require('gulp-inline-source');
 let port = 3221;
 let site = '';
 
-gulp.task('assets', function(done) {
-    fs.ensureDirSync('dist/assets/');
-    fs.copy('src/img/', 'dist/assets/', function(err) {
+gulp.task('build-static', function(done) {
+    fs.remove('dist', function(err) {
         if (err) {
             console.error(err);
         }
-        fs.remove('dist/assets/.gitignore', function(err) {
+        fs.ensureDirSync('dist/assets/');
+        fs.copy('src/img/', 'dist/assets/', function(err) {
             if (err) {
-                console.error(err)
+                console.error(err);
             }
-            done();
+            fs.remove('dist/assets/.gitignore', function(err) {
+                if (err) {
+                    console.error(err);
+                }
+                done();
+            });
         });
     });
 });
@@ -42,7 +48,7 @@ gulp.task('build-useref', function() {
         .pipe(gulpif('*.css', minify()))
         .pipe(gulpif('*.html', inlinesource()))
         .pipe(gulpif('*.html', inlinecss({
-            removeStyleTags: false,
+            removeStyleTags: false
         })))
         .pipe(gulpif('*.html', htmlmin({
             collapseWhitespace: true,
@@ -51,15 +57,68 @@ gulp.task('build-useref', function() {
         .pipe(gulp.dest('dist'));
 });
 
+gulp.task('build-compress', function(done) {
+    function compress(filename) {
+        return new Promise(function(resolve, reject) {
+            let gz = zlib.createGzip({
+                level: 9
+            });
+            let input = fs.createReadStream(filename);
+            let output = fs.createWriteStream(filename + '.gz');
+
+            input.pipe(gz).pipe(output);
+            output.on('finish', function() {
+                removeFile(filename);
+                resolve();
+            });
+        });
+    }
+
+    function removeFile(filename) {
+        fs.remove(filename, function(err) {
+            if (err) {
+                console.error(err);
+            }
+        });
+    }
+
+    fs.readdir('dist', function(err, files) {
+        let tasks = [];
+
+        files.forEach(function(filename) {
+            filename = 'dist/' + filename;
+            if (fs.lstatSync(filename).isFile()) {
+                tasks.push(compress(filename));
+            }
+        });
+
+        fs.readdir('dist/assets', function(err, files) {
+            files.forEach(function(filename) {
+                filename = 'dist/assets/' + filename;
+                if (fs.lstatSync(filename).isFile()) {
+                    tasks.push(compress(filename));
+                }
+            });
+
+            Promise.all(tasks).then(done());
+        });
+    });
+});
+
 gulp.task('browser-sync', function(done) {
-    browserSync.init({
+    browserSync({
         port,
         open: false,
-        server: {
-            baseDir: 'dist'
-        }
+        server: 'dist',
+        files: ['dist/*.html', 'dist/assets/*.jpg'],
+    }, function(err, bs) {
+        bs.addMiddleware('*', require('connect-gzip-static')('dist', {
+            maxAge: 2629000000 // one week
+        }), {
+            override: true
+        });
+        done();
     });
-    done();
 });
 
 gulp.task('ngrok', function(done) {
@@ -106,5 +165,5 @@ gulp.task('clean', function(done) {
     });
 });
 
-gulp.task('build', gulp.series('assets', 'build-useref'));
+gulp.task('build', gulp.series('build-static', 'build-useref', 'build-compress'));
 gulp.task('serve', gulp.series('build', 'browser-sync', 'ngrok'));
