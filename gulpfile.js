@@ -22,27 +22,25 @@ let port = 3221;
 let site = '';
 
 gulp.task('build-static', function(done) {
-    fs.remove('dist', function(err) {
+    fs.ensureDirSync('dist/assets/');
+    fs.copy('src/img/', 'dist/assets/', function(err) {
         if (err) {
             console.error(err);
         }
-        fs.ensureDirSync('dist/assets/');
-        fs.copy('src/img/', 'dist/assets/', function(err) {
+        fs.remove('dist/assets/.gitignore', function(err) {
             if (err) {
                 console.error(err);
             }
-            fs.remove('dist/assets/.gitignore', function(err) {
-                if (err) {
-                    console.error(err);
-                }
-                done();
-            });
+            done();
         });
     });
 });
 
 gulp.task('build-useref', function() {
-    return gulp.src('src/*.html')
+    return gulp.src([
+            'src/*.html',
+            'src/views/pizza.html'
+        ])
         .pipe(useref())
         .pipe(gulpif('*.js', uglify()))
         .pipe(gulpif('*.css', minify()))
@@ -105,12 +103,21 @@ gulp.task('build-compress', function(done) {
     });
 });
 
+gulp.task('build-static-pizza', function(done) {
+    fs.copy('src/views/images/', 'dist/assets/', function(err) {
+        if (err) {
+            console.error(err);
+        }
+        done();
+    });
+});
+
 gulp.task('browser-sync', function(done) {
     browserSync({
         port,
         open: false,
         server: 'dist',
-        files: ['dist/*.html', 'dist/assets/*.jpg'],
+        files: ['dist/*.html', 'dist/assets/*.jpg', 'dist/assets/*.png'],
     }, function(err, bs) {
         bs.addMiddleware('*', require('connect-gzip-static')('dist', {
             maxAge: 2629000000 // one week
@@ -165,5 +172,5 @@ gulp.task('clean', function(done) {
     });
 });
 
-gulp.task('build', gulp.series('build-static', 'build-useref', 'build-compress'));
+gulp.task('build', gulp.series('build-static', 'build-static-pizza', 'build-useref', 'build-compress'));
 gulp.task('serve', gulp.series('build', 'browser-sync', 'ngrok'));
